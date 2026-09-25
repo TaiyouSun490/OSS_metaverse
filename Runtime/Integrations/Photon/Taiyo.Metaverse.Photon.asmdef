@@ -1,0 +1,26 @@
+{
+  "name": "Taiyo.Metaverse.Photon",
+  "rootNamespace": "Taiyo.Metaverse.Photon",
+  "references": [
+    "Taiyo.Metaverse.Runtime",
+    "PhotonUnityNetworking",
+    "PhotonRealtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "TAIYO_METAVERSE_PHOTON"
+  ],
+  "versionDefines": [
+    {
+      "name": "com.exitgames.photon.pun",
+      "expression": "2.0.0",
+      "define": "TAIYO_METAVERSE_PHOTON"
+    }
+  ],
+  "noEngineReferences": false
+}

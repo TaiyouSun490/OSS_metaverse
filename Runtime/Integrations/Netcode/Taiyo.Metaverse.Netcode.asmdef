@@ -1,0 +1,25 @@
+{
+  "name": "Taiyo.Metaverse.Netcode",
+  "rootNamespace": "Taiyo.Metaverse.Netcode",
+  "references": [
+    "Taiyo.Metaverse.Runtime",
+    "Unity.Netcode.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "TAIYO_METAVERSE_NGO"
+  ],
+  "versionDefines": [
+    {
+      "name": "com.unity.netcode.gameobjects",
+      "expression": "1.0.0",
+      "define": "TAIYO_METAVERSE_NGO"
+    }
+  ],
+  "noEngineReferences": false
+}

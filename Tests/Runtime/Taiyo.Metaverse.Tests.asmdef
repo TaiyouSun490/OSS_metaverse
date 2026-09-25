@@ -1,0 +1,19 @@
+{
+  "name": "Taiyo.Metaverse.Tests",
+  "rootNamespace": "Taiyo.Metaverse.Tests",
+  "references": [
+    "Taiyo.Metaverse.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

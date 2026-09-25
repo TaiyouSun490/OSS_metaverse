@@ -1,0 +1,19 @@
+{
+  "name": "Taiyo.Metaverse.Fusion",
+  "rootNamespace": "Taiyo.Metaverse.FusionAdapter",
+  "references": [
+    "Taiyo.Metaverse.Runtime",
+    "Fusion.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "TAIYO_METAVERSE_FUSION"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

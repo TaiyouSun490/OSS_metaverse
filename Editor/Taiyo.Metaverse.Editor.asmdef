@@ -1,0 +1,21 @@
+{
+  "name": "Taiyo.Metaverse.Editor",
+  "rootNamespace": "Taiyo.Metaverse.Editor",
+  "references": [
+    "Taiyo.Metaverse.Runtime",
+    "Unity.Addressables",
+    "Unity.Addressables.Editor",
+    "Unity.ResourceManager"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

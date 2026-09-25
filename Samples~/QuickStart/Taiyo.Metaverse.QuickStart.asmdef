@@ -1,0 +1,16 @@
+{
+  "name": "Taiyo.Metaverse.QuickStart",
+  "rootNamespace": "Taiyo.Metaverse.Samples",
+  "references": [
+    "Taiyo.Metaverse.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

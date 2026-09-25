@@ -1,0 +1,39 @@
+{
+  "name": "com.taiyo.metaverse",
+  "version": "0.6.0",
+  "displayName": "Taiyo Metaverse Kit",
+  "description": "Provider-agnostic open-source metaverse foundation with accounts, friends, voice, pluggable networking, XR/desktop, and Addressables content delivery.",
+  "unity": "2022.3",
+  "license": "MIT",
+  "author": {
+    "name": "Taiyo"
+  },
+  "dependencies": {
+    "com.unity.addressables": "1.21.21",
+    "com.unity.modules.animation": "1.0.0"
+  },
+  "keywords": [
+    "metaverse",
+    "xr",
+    "networking",
+    "voice",
+    "addressables",
+    "avatar",
+    "accounts",
+    "friends",
+    "playfab",
+    "final-ik",
+    "movement-sdk",
+    "body-tracking",
+    "full-body-tracking",
+    "steamvr",
+    "mocopi"
+  ],
+  "samples": [
+    {
+      "displayName": "Quick Start",
+      "description": "A minimal bootstrap and desktop/XR pose source.",
+      "path": "Samples~/QuickStart"
+    }
+  ]
+}

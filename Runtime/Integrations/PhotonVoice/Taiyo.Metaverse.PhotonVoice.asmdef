@@ -1,0 +1,24 @@
+{
+  "name": "Taiyo.Metaverse.PhotonVoice",
+  "rootNamespace": "Taiyo.Metaverse.PhotonVoice",
+  "references": [
+    "Taiyo.Metaverse.Runtime",
+    "Taiyo.Metaverse.Fusion",
+    "Fusion.Runtime",
+    "PhotonVoice.API",
+    "PhotonVoice",
+    "PhotonVoice.Fusion"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "TAIYO_METAVERSE_FUSION",
+    "TAIYO_METAVERSE_PHOTON_VOICE"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
