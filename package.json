@@ -1,6 +1,6 @@
 {
   "name": "com.taiyo.metaverse",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "displayName": "Taiyo Metaverse Kit",
   "description": "Provider-agnostic open-source metaverse foundation with accounts, friends, voice, pluggable networking, XR/desktop, and Addressables content delivery.",
   "unity": "2022.3",
@@ -30,6 +30,11 @@
     "mocopi"
   ],
   "samples": [
+    {
+      "displayName": "Shared Space",
+      "description": "Optional colocated/shared-anchor and separate-space session controls for existing desktop or XR UI.",
+      "path": "Samples~/SharedSpace"
+    },
     {
       "displayName": "Quick Start",
       "description": "A minimal bootstrap and desktop/XR pose source.",

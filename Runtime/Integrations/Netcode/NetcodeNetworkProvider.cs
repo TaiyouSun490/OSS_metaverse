@@ -12,7 +12,7 @@ namespace Taiyo.Metaverse.Netcode
     [CreateAssetMenu(menuName = "Taiyo Metaverse/Networking/Netcode Provider", fileName = "NetcodeNetworkProvider")]
     public sealed class NetcodeNetworkProvider : NetworkProvider
     {
-        private const string MessageName = "taiyo.metaverse.packet.v1";
+        private const string MessageName = "taiyo.metaverse.packet.v2";
         [SerializeField] private bool shutdownNetworkManagerOnLeave = true;
 
         private ConnectionState state;
@@ -33,7 +33,6 @@ namespace Taiyo.Metaverse.Netcode
 
             manager.OnClientConnectedCallback += OnClientConnected;
             manager.OnClientDisconnectCallback += OnClientDisconnected;
-            manager.CustomMessagingManager.RegisterNamedMessageHandler(MessageName, OnNamedMessage);
             SetState(ConnectionState.Ready);
             return Task.CompletedTask;
         }
@@ -45,17 +44,29 @@ namespace Taiyo.Metaverse.Netcode
             SetState(ConnectionState.Joining);
             var started = request != null && request.host ? manager.StartHost() : manager.StartClient();
             if (!started)
+            {
+                SetState(ConnectionState.Ready);
                 throw new InvalidOperationException("Netcode could not start. Check the configured NetworkTransport.");
+            }
 
-            await WaitUntilAsync(() => manager.IsListening && (manager.IsServer || manager.IsConnectedClient), cancellationToken);
-            SetState(ConnectionState.Joined);
-            RaisePeerJoined(new PeerInfo(LocalPeer, true));
+            try
+            {
+                // NGO creates CustomMessagingManager during StartHost/StartClient.
+                manager.CustomMessagingManager.RegisterNamedMessageHandler(MessageName, OnNamedMessage);
+                await WaitUntilAsync(() => manager.IsListening && (manager.IsServer || manager.IsConnectedClient), cancellationToken);
+                SetState(ConnectionState.Joined);
+                RaisePeerJoined(new PeerInfo(LocalPeer, true));
+            }
+            catch
+            {
+                manager.Shutdown();SetState(ConnectionState.Ready);throw;
+            }
         }
 
         public override Task LeaveAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (state != ConnectionState.Joined)
+            if (state != ConnectionState.Joined && state != ConnectionState.Joining)
                 return Task.CompletedTask;
             SetState(ConnectionState.Leaving);
             if (shutdownNetworkManagerOnLeave && manager != null && manager.IsListening)
@@ -88,8 +99,11 @@ namespace Taiyo.Metaverse.Netcode
 
         private void OnNamedMessage(ulong transportSender, FastBufferReader reader)
         {
+            if (reader.Length - reader.Position < sizeof(ulong) + 2) return;
             reader.ReadValueSafe(out ulong claimedSender);
             reader.ReadValueSafe(out byte channel);
+            reader.ReadValueSafe(out byte reliable);
+            if (reliable > 1) return;
             var count = reader.Length - reader.Position;
             var bytes = new byte[count];
             reader.ReadBytesSafe(ref bytes, count);
@@ -102,16 +116,17 @@ namespace Taiyo.Metaverse.Netcode
             foreach (var clientId in manager.ConnectedClientsIds)
             {
                 if (clientId != transportSender && clientId != manager.LocalClientId)
-                    SendTo(clientId, sender, channel, new ArraySegment<byte>(bytes), NetworkDelivery.Unreliable);
+                    SendTo(clientId, sender, channel, new ArraySegment<byte>(bytes), reliable == 1 ? NetworkDelivery.ReliableSequenced : NetworkDelivery.Unreliable);
             }
         }
 
         private void SendTo(ulong target, ulong sender, byte channel, ArraySegment<byte> payload, NetworkDelivery delivery)
         {
-            using (var writer = new FastBufferWriter(sizeof(ulong) + sizeof(byte) + payload.Count, Allocator.Temp))
+            using (var writer = new FastBufferWriter(sizeof(ulong) + 2 + payload.Count, Allocator.Temp))
             {
                 writer.WriteValueSafe(sender);
                 writer.WriteValueSafe(channel);
+                writer.WriteValueSafe((byte)(delivery == NetworkDelivery.ReliableSequenced ? 1 : 0));
                 writer.WriteBytesSafe(payload.Array, payload.Count, payload.Offset);
                 manager.CustomMessagingManager.SendNamedMessage(MessageName, target, writer, delivery);
             }
@@ -127,6 +142,8 @@ namespace Taiyo.Metaverse.Netcode
         {
             if (clientId != manager.LocalClientId)
                 RaisePeerLeft(new PeerInfo(new PeerId(clientId.ToString()), false));
+            else if(state == ConnectionState.Joined)
+                SetState(ConnectionState.Ready);
         }
 
         private static async Task WaitUntilAsync(Func<bool> condition, CancellationToken cancellationToken)
