@@ -176,7 +176,7 @@ namespace Taiyo.Metaverse
                 }
                 else readyPeers.Remove(authority);
             }
-            else if (IsHost && f.Length == 4 && f[1] == "peer" && epoch == Epoch)
+            else if (f.Length == 4 && f[1] == "peer" && epoch == Epoch)
             {
                 if (f[3] == "1") readyPeers[message.Sender] = Time.unscaledTime;
                 else readyPeers.Remove(message.Sender);

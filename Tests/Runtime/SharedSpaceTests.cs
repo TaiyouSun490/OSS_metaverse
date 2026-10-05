@@ -85,8 +85,10 @@ namespace Taiyo.Metaverse.Tests
         [Test] public async Task SeparateSpaces_HandshakeAndHostAuthorityAndDisconnect()
         {
             string room = Guid.NewGuid().ToString(); var host = await Client(room); var client = await Client(room); var other = await Client(room);
-            client.BeginClient(host.runtime.LocalPeer); host.BeginHost(SpaceMode.SeparateSpaces, Pose.identity); Pump(host, client, other);
+            client.BeginClient(host.runtime.LocalPeer); other.BeginClient(host.runtime.LocalPeer);
+            host.BeginHost(SpaceMode.SeparateSpaces, Pose.identity); Pump(host, client, other);
             Assert.That(host.IsPeerReady(client.runtime.LocalPeer), Is.True); Assert.That(client.IsPeerReady(host.runtime.LocalPeer), Is.True);
+            Assert.That(client.IsPeerReady(other.runtime.LocalPeer), Is.True); Assert.That(other.IsPeerReady(client.runtime.LocalPeer), Is.True);
             var epoch = client.Epoch;
             other.runtime.SendUserMessage(80, new ArraySegment<byte>(Encoding.UTF8.GetBytes($"tmspace1|host|{Guid.NewGuid():N}|1|{Guid.NewGuid():N}|{Guid.NewGuid():N}|1")));
             Pump(host, client, other); Assert.That(client.Epoch, Is.EqualTo(epoch));
