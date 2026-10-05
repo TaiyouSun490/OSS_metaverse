@@ -27,12 +27,15 @@ Meta XR Core SDKはこのMITリポジトリへ再配布していません。利�
 - XR Plug-in ManagementでAndroid OpenXRを有効にし、**Meta Quest Support** とSDKの **Meta XR Feature** を有効にします。
 - XRリグに `OVRManager` を1つ配置します。独自リグでも利用でき、`OVRCameraRig` への置き換えは不要です。正しい追跡済みカメラだけを `MainCamera` にし、tracking originをリグと揃えます（Quest実験ではStage）。
 - `MetaSharedAnchorProvider` を追加し、`space.anchorProvider` に指定します。
+- Metaの `OVRProjectConfig` で **Anchor Support = Enabled**、**Shared Anchor Support = Supported** を設定します。手追跡を使うアプリでは **Hand Tracking Support = Controllers And Hands** なども有効にします。SDKのmanifest生成処理はこの設定を読み、無効な機能の権限を削除します。OpenXR Featureの有効化や、早いタイミングでのmanifest手動追記だけでは不十分です。
 - Android manifestへ `com.oculus.permission.USE_ANCHOR_API` と `com.oculus.permission.IMPORT_EXPORT_IOT_MAP_DATA`、`android.permission.INTERNET` を追加します。
 - 両端末で **設定 → プライバシーと安全 → デバイスのアクセス許可 → 高度な空間サービス** を有効にし、Metaサービスへ接続できるようにします。
 
 同じ部屋でホストが作成・保存・グループ共有し、そのgroup UUIDとanchor UUIDを既存の通信で渡します。参加者は指定されたアンカーをロード・認識して同じ基準座標を使います。**BluetoothによるColocation Discoveryは使用しません**。セッション検索は下記のLAN探索または選んだ通信方式に任せます。パススルー表示はこの実装の必須条件ではありません。
 
 ホストの作成・保存・共有、参加者のロード・認識の失敗をUIへ返します。初期化には45秒の上限があり、認識の喪失はFailedへ移行します。自動で別空間へ切り替えません。空間サービスが無効なら設定を確認してRetry、同じ部屋ではない場合はホストがSeparate spacesへ切り替えます。
+
+生成したAPKの最終manifestにも上記の権限が残っていることを確認してください。独自の `IPostGenerateGradleAndroidProject` を使う場合、SDK 207の `OVRGradleGeneration` はcallback order **99999**で動作します。設定を整えた上で、アプリ側の最終検査や権限方針の適用をそれより後に置きます。ビルド成功だけでは権限の保持を確認したことになりません。
 
 アンカーのTransformはSDKの追跡に従って更新されます。送受信の座標は毎回そのフレームを使い、XR Origin自体は動かしません。実験で必要なミリ・センチ単位の登録精度は、同じ物理的目印で双方から確認してください。認識成功だけでは精度を保証しません。
 
