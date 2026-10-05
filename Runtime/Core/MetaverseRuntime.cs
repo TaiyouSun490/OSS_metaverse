@@ -15,6 +15,8 @@ namespace Taiyo.Metaverse
         [SerializeField] private RemoteContentService contentService;
         [SerializeField] private Transform remotePlayersRoot;
         [SerializeField] private bool joinDefaultRoomOnStart = true;
+        [Tooltip("Optional shared/virtual space. Leave empty for the original world-space pose protocol.")]
+        [SerializeField] private SharedSpaceSession sharedSpace;
 
         private readonly Dictionary<PeerId, RemotePeer> peers = new Dictionary<PeerId, RemotePeer>();
         private readonly SafetyService safety = new SafetyService();
@@ -179,6 +181,13 @@ namespace Taiyo.Metaverse
             poseTimer = 0f;
             if (localPoseSource.TryGetPose(out var pose))
             {
+                if (sharedSpace)
+                {
+                    if (!sharedSpace.IsReady) return;
+                    var spatialPayload = SpacePoseCodec.Encode(sharedSpace.Epoch, SpaceCoordinates.Transform(pose, sharedSpace.Frame, true));
+                    network.Send(SpacePoseCodec.Channel, new ArraySegment<byte>(spatialPayload), DeliveryMode.Unreliable);
+                    return;
+                }
                 var payload = PoseCodec.Encode(pose);
                 network.Send(MetaverseChannels.Pose, new ArraySegment<byte>(payload), DeliveryMode.Unreliable);
             }
@@ -226,8 +235,13 @@ namespace Taiyo.Metaverse
             switch (message.Channel)
             {
                 case MetaverseChannels.Pose:
-                    if (remote != null && PoseCodec.TryDecode(message.Payload, out var pose))
+                    if (!sharedSpace && remote != null && PoseCodec.TryDecode(message.Payload, out var pose))
                         remote.ApplyPose(pose);
+                    break;
+                case SpacePoseCodec.Channel:
+                    if (sharedSpace && remote != null && sharedSpace.IsPeerReady(message.Sender) &&
+                        SpacePoseCodec.TryDecode(message.Payload, sharedSpace.Epoch, out var spatialPose))
+                        remote.ApplyPose(SpaceCoordinates.Transform(spatialPose, sharedSpace.Frame, false));
                     break;
                 case MetaverseChannels.Presence:
                     if (remote != null)
@@ -289,6 +303,7 @@ namespace Taiyo.Metaverse
 
         private void OnDestroy()
         {
+            if (lifetime == null) return;
             lifetime?.Cancel();
             voice?.Shutdown();
             ClearPeers();
@@ -296,7 +311,7 @@ namespace Taiyo.Metaverse
             {
                 account.ProfileChanged -= OnAccountProfileChanged;
                 account.Error -= ReportError;
-                Destroy(account);
+                DestroyOwned(account);
             }
             if (network != null)
             {
@@ -305,11 +320,17 @@ namespace Taiyo.Metaverse
                 network.PeerLeft -= OnPeerLeft;
                 network.MessageReceived -= OnNetworkMessage;
                 network.Error -= ReportError;
-                Destroy(network);
+                DestroyOwned(network);
             }
             if (voice != null)
-                Destroy(voice);
+                DestroyOwned(voice);
             lifetime?.Dispose();
+            lifetime = null;
+        }
+
+        private static void DestroyOwned(UnityEngine.Object value)
+        {
+            if (Application.isPlaying) Destroy(value); else DestroyImmediate(value);
         }
 
         private sealed class RemotePeer : IDisposable
@@ -373,7 +394,7 @@ namespace Taiyo.Metaverse
                 if (avatarInstance != null && content != null)
                     content.ReleaseInstance(avatarInstance);
                 if (container != null)
-                    Destroy(container);
+                    DestroyOwned(container);
                 cancellation.Dispose();
             }
         }

@@ -3,7 +3,8 @@
   "rootNamespace": "Taiyo.Metaverse.Netcode",
   "references": [
     "Taiyo.Metaverse.Runtime",
-    "Unity.Netcode.Runtime"
+    "Unity.Netcode.Runtime",
+    "Unity.Collections"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

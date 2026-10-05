@@ -2,7 +2,7 @@
 
 Unity 2022.3 LTS向けの、特定ベンダーにロックインされないメタバース基盤です。UPMパッケージとして導入でき、通信・音声を`ScriptableObject`プロバイダーで交換し、XRとデスクトップを同じ姿勢プロトコルで扱います。ライセンスはMITです。
 
-> **Status: 0.6 / foundation.** 少人数のプロトタイプを立ち上げるための土台です。認証サーバー、UGC審査、永続化、管理画面までを含む完成サービスではありません。
+> **Status: 0.7 / foundation.** 少人数のプロトタイプを立ち上げるための土台です。認証サーバー、UGC審査、永続化、管理画面までを含む完成サービスではありません。
 
 ## 含まれるもの
 
@@ -23,6 +23,12 @@ Unity 2022.3 LTS向けの、特定ベンダーにロックインされないメ�
 - Addressablesによるremote catalog、アバターprefab、world sceneの読み込み
 - AddressablesビルドをローカルフォルダーまたはHTTP PUT先へ公開するEditor UI
 - Bootstrap生成メニュー、Quick Start sample、EditMode tests
+
+## 0.7: 同一空間・別空間（任意機能）
+
+共有アンカーを使う同一空間モードと、各自の基準位置を使う別空間モード、Quest対応のLAN探索を追加しました。Meta XR Core SDKは任意依存です。座標は等倍を維持し、失敗・認識喪失・モード変更時はreadyを解除します。NGOの起動と再接続、Reliable中継も修正しました。NGO利用者は全員を0.7へ揃えてください。
+
+導入手順、通信との違い、実機確認項目は[SharedSpaces](Documentation~/SharedSpaces.md)を参照してください。Package Managerの **Shared Space** sampleにUI接続例があります。
 
 ## 最短セットアップ
 

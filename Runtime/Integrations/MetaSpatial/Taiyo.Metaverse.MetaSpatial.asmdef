@@ -1,0 +1,8 @@
+{
+  "name": "Taiyo.Metaverse.MetaSpatial",
+  "rootNamespace": "Taiyo.Metaverse.MetaSpatial",
+  "references": ["Taiyo.Metaverse.Runtime", "Oculus.VR"],
+  "autoReferenced": true,
+  "defineConstraints": ["TAIYO_METAVERSE_META_SPATIAL"],
+  "versionDefines": [{"name": "com.meta.xr.sdk.core", "expression": "207.0.0", "define": "TAIYO_METAVERSE_META_SPATIAL"}]
+}

@@ -4,7 +4,7 @@
   "references": [
     "Taiyo.Metaverse.Runtime"
   ],
-  "includePlatforms": [],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,
